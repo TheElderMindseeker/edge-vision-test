@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+  sensor:
+    build: ./Sensor
+    environment:
+      - SENSOR_SERVICE_ADDRESS=http://controller:8087/data
+    deploy:
+      replicas: 8
+  controller:
+    build: ./Controller
+    ports:
+      - "8087:8087"
+#    volumes:
+#      - type: bind
+#        source: /home/daniil/PycharmProjects/EdgeVision/logs
+#        target: /app/logs
+  manipulator:
+    build: ./Manipulator
+    ports:
+      - "8088:8088"
