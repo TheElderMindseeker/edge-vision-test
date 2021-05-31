@@ -28,7 +28,9 @@ async def control_manipulator(app):
                 'datetime': list(sensor_data.keys())[-1],
                 'status': 'up' if signal_sum > 0 else 'down',
             }
-            writer.write(json.dumps(message).encode('utf-8'))
+            message_dump = json.dumps(message, indent=None, separators=(',', ':'))
+            logging.info('Sending message: %s', message_dump)
+            writer.write(message_dump.encode('utf-8'))
             await writer.drain()
             logging.debug('Message sent')
             writer.close()

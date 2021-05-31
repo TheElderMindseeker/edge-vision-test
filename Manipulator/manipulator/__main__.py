@@ -26,8 +26,8 @@ try:
                 if '}' in input_buffer:
                     end_of_message = input_buffer.index('}') + 1
                     message = input_buffer[:end_of_message]
+                    logging.info('Message received: %s', message)
                     json_data = json.loads(message)
-                    logging.info(json_data)
                     input_buffer = input_buffer[end_of_message:]
         except OSError:
             logging.exception('Got OSError')
