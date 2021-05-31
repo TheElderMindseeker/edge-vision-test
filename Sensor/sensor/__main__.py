@@ -1,6 +1,8 @@
 import logging
 import os
 from datetime import datetime
+import random
+from math import cos
 
 import pygame
 import requests
@@ -13,6 +15,14 @@ try:
 except KeyError as exc:
     print(f'ERROR: missing environment variable {exc}')
     exit(-1)
+
+AMPLITUDE = random.choice((-3, -2, -1, 1, 2, 3))
+PHASE = random.choice((-1.5, -1, -0.75, 0, 0.75, 1, 1.5))
+ANGULAR_FREQUENCY = random.choice((1, 2, 3))
+
+
+def oscillation(counter):
+    return AMPLITUDE * cos(ANGULAR_FREQUENCY * counter + PHASE)
 
 
 def main_loop() -> None:
@@ -37,7 +47,7 @@ def main_loop() -> None:
                 SERVICE_ADDRESS,
                 json={
                     'datetime': datetime.now().strftime('%Y%m%dT%H%M%S'),
-                    'payload': counter,
+                    'payload': oscillation(counter / FPS),
                 }
             )
             response.raise_for_status()

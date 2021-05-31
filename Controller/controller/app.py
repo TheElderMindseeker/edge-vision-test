@@ -16,12 +16,17 @@ async def control_manipulator(app):
         logging.info('Control manipulator')
         size = sum(len(array) for array in sensor_data.values())
         logging.info('Total messages: %d', size)
+        signal_sum = 0
+        for time_stamp in sorted(sensor_data.keys()):
+            partial_sum = sum(sensor_data[time_stamp])
+            signal_sum = signal_sum / 2 + partial_sum
+        logging.debug('Signal sum: %f', signal_sum)
         try:
             _, writer = await asyncio.open_connection('manipulator', 8088)
             logging.debug('Connected successfully')
             message = {
                 'datetime': list(sensor_data.keys())[-1],
-                'status': random.choice(('up', 'down')),
+                'status': 'up' if signal_sum > 0 else 'down',
             }
             writer.write(json.dumps(message).encode('utf-8'))
             await writer.drain()
@@ -54,11 +59,7 @@ async def accept_data(request: web.Request):
     return web.Response(text='OK')
 
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    # filename='./logs/controller.log',
-    # filemode='a',
-)
+logging.basicConfig(level=logging.DEBUG)
 logging.debug('Started')
 app = web.Application()
 app.add_routes(routes)

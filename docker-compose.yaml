@@ -10,10 +10,6 @@ services:
     build: ./Controller
     ports:
       - "8087:8087"
-#    volumes:
-#      - type: bind
-#        source: /home/daniil/PycharmProjects/EdgeVision/logs
-#        target: /app/logs
   manipulator:
     build: ./Manipulator
     ports:
